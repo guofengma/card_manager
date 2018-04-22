@@ -1,0 +1,38 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/addcard/bank/bank",
+    "pages/cardDetail/cardDetail",
+    "pages/cardType/cardType"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#1296db",
+    "navigationBarTitleText": "许多卡",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#bfbfbf",
+    "selectedColor": "#1296db",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "许多卡",
+        "iconPath": "images/tabBar/home_unselected.png",
+        "selectedIconPath": "images/tabBar/home_selected.png"
+      },
+      {
+        "pagePath": "pages/logs/logs",
+        "text": "更多",
+        "iconPath": "images/tabBar/more_unselected.png",
+        "selectedIconPath": "images/tabBar/more_selected.png"
+      }
+    ]
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "downloadFile": 10000
+  },
+  "debug": true
+}

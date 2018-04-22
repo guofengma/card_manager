@@ -1,0 +1,41 @@
+<!--pages/addcard/bank/bank.wxml-->
+<view class="{{showView?'view_show':'view_hide'}}" style="padding:0px">
+    <view style="background-color:#e6e6e6">
+<image src="{{chooseImageSrc}}" class="{{showView?'view_show':'view_hide'}}"  style="margin: 0 auto;justify-content: center;align-items:  center;" bindtap='addPicture' mode="aspectFit" />
+    </view>
+    
+    <view class="bankinfo" style="margin-top:14px">
+      <text style="width:100px;">银行卡号：</text>
+      <text class="bankInfoText">{{bankNo}}</text>
+    </view>
+    <view class="bankinfo">
+      <text style="width:100px;">卡 类 型：</text>
+      <text class="bankInfoText">{{bankType}}</text>
+    </view>
+    <view class="bankinfo">
+      <text style="width:100px;">卡 名 称：</text>
+      <text class="bankInfoText">{{bankName}}</text>
+    </view>
+     <view class="bankinfo">
+      <text style="width:100px;">银行信息：</text>
+      <text class="bankInfoText">{{bankInfo}}</text>
+    </view>
+    <view class="bankinfo">
+      <text style="width:100px;">有 效 期：</text>
+      <text class="bankInfoText">{{validatetime}}</text>
+    </view>
+
+
+    <button type="primary" style = "margin:10px">确认添加</button>
+</view>
+<view class="{{showView?'view_hide':'add__icon'}}"  style="margin-top:5px" bindtap='addPicture'>  
+      <image src="../../../images/add_picture.png" /> 
+</view>
+
+  
+
+
+
+
+
+
