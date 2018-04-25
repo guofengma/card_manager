@@ -1,10 +1,10 @@
-<!--pages/addcard/bank/bank.wxml-->
+<!--pages/addcard/vipCard/vipCard.wxml-->
 <view class="{{showView?'view_show':'view_hide'}}" style="padding:0px">
     <view style="background-color:#e6e6e6">
 <image src="{{chooseImageSrc}}" class="{{showView?'view_show':'view_hide'}}"  style="margin: 0 auto;justify-content: center;align-items:  center;" bindtap='addPicture' mode="aspectFit" />
     </view>
     <view class="bankinfo" wx:for="{{bank}}" wx:key="item" wx:for-item="item">
-      <text style="width:100px;">{{item.item}}：</text>
+      <text style="width:100px;">{{item.item}}</text>
       <text class="bankInfoText">{{item.itemstring}}</text>
     </view>  
 
@@ -14,11 +14,4 @@
 <view class="{{showView?'view_hide':'add__icon'}}"  style="margin-top:5px" bindtap='addPicture'>  
       <image src="../../../images/add_picture.png" /> 
 </view>
-
-  
-
-
-
-
-
 

@@ -1,12 +1,13 @@
 //index.js
 //获取应用实例
 const app = getApp()
-
+const Bmob = require('../../utils/bmob.js')
 Page({
   data: {
     motto: 'Hello World',
     userInfo: {},
     hasUserInfo: false,
+    datas:[],
     canIUse: wx.canIUse('button.open-type.getUserInfo')
   },
   //事件处理函数
@@ -42,6 +43,8 @@ Page({
         }
       })
     }
+    var _this = this;
+    _this.getCardsByOpenId();
   },
   getUserInfo: function(e) {
     console.log(e)
@@ -50,6 +53,35 @@ Page({
       userInfo: e.detail.userInfo,
       hasUserInfo: true
     })
+  },
+
+  //根据openId查询卡号
+  getCardsByOpenId:function(e){
+    var _this = this;
+    wx.showLoading({
+      title: '加载中...',
+    })
+    var Card = Bmob.Object.extend("card")
+    var query = new Bmob.Query(Card);
+    var openId = wx.getStorageSync('openid');
+    query.equalTo("openId",openId);
+    query.descending("updatedAt");
+    query.find({
+      success:function(results){
+        wx.hideLoading()
+        console.log(results)
+        _this.setData({
+          datas:results
+        })
+        _this.finishRefresh();
+      },error:function(error){
+        wx.hideLoading()
+        wx.showToast({
+          title: error.message+" code="+error.code,
+        })
+        _this.finishRefresh();
+      }
+    });
   },
 
   //添加卡号
@@ -76,5 +108,23 @@ Page({
         console.log(res.errMsg);
       }
     })*/
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
+
+  },
+  //下拉刷新
+  onPullDownRefresh: function () {
+    wx.showNavigationBarLoading() //在标题栏中显示加载
+    var _this = this;
+    _this.getCardsByOpenId();
+  },
+  //停止刷新
+  finishRefresh:function(){
+    wx.hideNavigationBarLoading() //完成停止加载
+    wx.stopPullDownRefresh() //停止下拉刷新
   }
 })

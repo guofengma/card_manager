@@ -2,9 +2,12 @@
   "pages": [
     "pages/index/index",
     "pages/logs/logs",
+    "pages/cardType/cardType",
     "pages/addcard/bank/bank",
     "pages/cardDetail/cardDetail",
-    "pages/cardType/cardType"
+    "pages/addcard/visitingCard/visitingCard",
+    "pages/addcard/vipCard/vipCard",
+    "pages/my/my"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -23,7 +26,7 @@
         "selectedIconPath": "images/tabBar/home_selected.png"
       },
       {
-        "pagePath": "pages/logs/logs",
+        "pagePath": "pages/my/my",
         "text": "更多",
         "iconPath": "images/tabBar/more_unselected.png",
         "selectedIconPath": "images/tabBar/more_selected.png"
@@ -34,5 +37,5 @@
     "request": 10000,
     "downloadFile": 10000
   },
-  "debug": true
+  "debug": false
 }

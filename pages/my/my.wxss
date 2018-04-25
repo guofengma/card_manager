@@ -1,0 +1,49 @@
+.index-hd {
+  padding: 80rpx;
+  text-align: center;
+}
+.kind-list-item {
+  margin: 20rpx 0;
+  background-color: #FFFFFF;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+.kind-list-item:first-child {
+  margin-top: 0;
+}
+.kind-list-text{
+  flex: 1;
+}
+.kind-list-img {
+  width: 60rpx;
+  height: 60rpx;
+}
+.kind-list-item-hd {
+  padding: 30rpx;
+  display: flex;
+  align-items: center;
+
+  transition: opacity .3s;
+}
+.kind-list-item-hd-show {
+  opacity: .2;
+}
+.kind-list-item-bd {
+  height: 0;
+  overflow: hidden;
+}
+.kind-list-item-bd-show {
+  height: auto;
+}
+
+
+.contact-btn {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  line-height: 0rpx;
+  text-align: center;
+  font-size: 28rpx;
+  background-color: #fff;
+  border-radius: 0px;
+}

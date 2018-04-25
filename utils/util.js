@@ -28,9 +28,9 @@ var common = {
     var sdic = Object.keys(dic).sort();
     var sortParam ='';
     for (var ki in sdic) {
-      sortParam += sdic[ki] + "=" + encodeURI(dic[sdic[ki]]) + "&";
-      console.log(sortParam);
+      sortParam += sdic[ki] + "=" + encodeURIComponent(dic[sdic[ki]]) + "&";
     }
+    //console.log(sortParam);
     return sortParam;
   },
   //获取ai.qq参数签名
