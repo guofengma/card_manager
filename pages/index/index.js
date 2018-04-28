@@ -45,6 +45,9 @@ Page({
     }
     var _this = this;
     _this.getCardsByOpenId();
+
+
+
   },
   getUserInfo: function(e) {
     console.log(e)
@@ -114,7 +117,7 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-
+    
   },
   //下拉刷新
   onPullDownRefresh: function () {

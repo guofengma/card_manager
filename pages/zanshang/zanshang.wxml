@@ -1,0 +1,4 @@
+<!--pages/zanshang/zanshang.wxml-->
+<view class ="container">
+        <image src = "/images/contact_me22.jpeg" mode='aspectFit' bindtap="previewImage" style="align:center"></image>
+</view>

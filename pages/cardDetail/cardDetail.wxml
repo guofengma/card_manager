@@ -5,9 +5,10 @@
     </view>
     <view class="bankinfo" wx:for="{{bank}}" wx:key="item" wx:for-item="item">
       <text style="width:100px;">{{item.item!=''?item.item+':' : ''}}</text>
-      <text class="bankInfoText">{{item.itemstring}}</text>
+      <text class="bankInfoText" selectable="true" bindlongpress='copy' data-value="{{item.itemstring}}">{{item.itemstring}}</text>
     </view>  
 
 
     <button type="primary" open-type="share" style = "margin:10px" bindtap='onShareAppMessage'>一键转发</button>
+    <button bindtap="setDisabled" bindtap='copy' style = "margin:10px">复制</button>
 </view>

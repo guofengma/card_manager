@@ -1,22 +1,11 @@
-// pages/my/my.js
+// pages/zanshang/zanshang.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    messages: [
-      {
-        groupName: "联系客服",
-        icon: "/images/kefu.png",
-        rightImage: "/images/tip.png"
-      },
-      {
-        groupName: "关于我们",
-        icon: "/images/about_us.png",
-        rightImage: "/images/tip.png"
-      }
-      ]
+  
   },
 
   /**
@@ -74,11 +63,11 @@ Page({
   onShareAppMessage: function () {
   
   },
-  previewImage:function(){
+  previewImage: function () {
     wx.previewImage({
-      urls: ['http://bmob-cdn-18395.b0.upaiyun.com/2018/04/27/f650a23e4093d48980560618f3993b12.png']
+      urls: ['http://bmob-cdn-18395.b0.upaiyun.com/2018/04/27/9879635440ddff20802ac164f6702c4a.png']
       // 需要预览的图片http链接  使用split把字符串转数组。不然会报错  
-    })  
-   
+    })
+
   }
 })

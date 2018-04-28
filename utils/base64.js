@@ -10,9 +10,9 @@
     '4', '5', '6', '7', '8', '9', '+', '/'
   ];
 
-  /** 
-   *ascii convert to binary 
-   */
+	/**
+	 *ascii convert to binary
+	 */
   var _toBinary = function (ascii) {
     var binary = new Array();
     while (ascii > 0) {
@@ -20,20 +20,20 @@
       ascii = Math.floor(ascii / 2);
       binary.push(b);
     }
-    /* 
-    var len = binary.length; 
-    if(6-len > 0){ 
-        for(var i = 6-len ; i > 0 ; --i){ 
-            binary.push(0); 
-        } 
-    }*/
+		/*
+		var len = binary.length;
+		if(6-len > 0){
+			for(var i = 6-len ; i > 0 ; --i){
+				binary.push(0);
+			}
+		}*/
     binary.reverse();
     return binary;
   };
 
-  /** 
-   *binary convert to decimal 
-   */
+	/**
+	 *binary convert to decimal
+	 */
   var _toDecimal = function (binary) {
     var dec = 0;
     var p = 0;
@@ -47,9 +47,9 @@
     return dec;
   };
 
-  /** 
-   *unicode convert to utf-8 
-   */
+	/**
+	 *unicode convert to utf-8
+	 */
   var _toUTF8Binary = function (c, binaryArray) {
     var mustLen = (8 - (c + 1)) + ((c - 1) * 6);
     var fatLen = binaryArray.length;
@@ -80,8 +80,8 @@
   };
 
   var __BASE64 = {
-    /** 
-     *BASE64 Encode 
+    /**
+     *BASE64 Encode
      */
     encoder: function (str) {
       var base64_Index = [];
@@ -97,13 +97,13 @@
           binaryArray = binaryArray.concat(_tmpBinary);
         } else if (unicode >= 0x80 && unicode <= 0x7FF) {
           binaryArray = binaryArray.concat(_toUTF8Binary(2, _tmpBinary));
-        } else if (unicode >= 0x800 && unicode <= 0xFFFF) {//UTF-8 3byte  
+        } else if (unicode >= 0x800 && unicode <= 0xFFFF) {//UTF-8 3byte
           binaryArray = binaryArray.concat(_toUTF8Binary(3, _tmpBinary));
-        } else if (unicode >= 0x10000 && unicode <= 0x1FFFFF) {//UTF-8 4byte  
+        } else if (unicode >= 0x10000 && unicode <= 0x1FFFFF) {//UTF-8 4byte
           binaryArray = binaryArray.concat(_toUTF8Binary(4, _tmpBinary));
-        } else if (unicode >= 0x200000 && unicode <= 0x3FFFFFF) {//UTF-8 5byte  
+        } else if (unicode >= 0x200000 && unicode <= 0x3FFFFFF) {//UTF-8 5byte
           binaryArray = binaryArray.concat(_toUTF8Binary(5, _tmpBinary));
-        } else if (unicode >= 4000000 && unicode <= 0x7FFFFFFF) {//UTF-8 6byte  
+        } else if (unicode >= 4000000 && unicode <= 0x7FFFFFFF) {//UTF-8 6byte
           binaryArray = binaryArray.concat(_toUTF8Binary(6, _tmpBinary));
         }
       }
@@ -116,9 +116,9 @@
         } else if (diff == 4) {
           extra_Zero_Count = 4;
         }
-        //if(extra_Zero_Count > 0){  
-        //  len += extra_Zero_Count+1;  
-        //}  
+        //if(extra_Zero_Count > 0){
+        //	len += extra_Zero_Count+1;
+        //}
         var _tmpExtra_Zero_Count = extra_Zero_Count;
         while (--_tmpExtra_Zero_Count >= 0) {
           binaryArray.push(0);
@@ -136,22 +136,22 @@
       }
       return base64;
     },
-    /** 
-     *BASE64  Decode for UTF-8  
+    /**
+     *BASE64  Decode for UTF-8 
      */
     decoder: function (_base64Str) {
       var _len = _base64Str.length;
       var extra_Zero_Count = 0;
-      /** 
-       *计算在进行BASE64编码的时候，补了几个0 
+      /**
+       *计算在进行BASE64编码的时候，补了几个0
        */
       if (_base64Str.charAt(_len - 1) == '=') {
-        //alert(_base64Str.charAt(_len-1));  
-        //alert(_base64Str.charAt(_len-2));  
-        if (_base64Str.charAt(_len - 2) == '=') {//两个等号说明补了4个0  
+        //alert(_base64Str.charAt(_len-1));
+        //alert(_base64Str.charAt(_len-2));
+        if (_base64Str.charAt(_len - 2) == '=') {//两个等号说明补了4个0
           extra_Zero_Count = 4;
           _base64Str = _base64Str.substring(0, _len - 2);
-        } else {//一个等号说明补了2个0  
+        } else {//一个等号说明补了2个0
           extra_Zero_Count = 2;
           _base64Str = _base64Str.substring(0, _len - 1);
         }
@@ -211,8 +211,8 @@
     }
   };
 
-  //window.BASE64 = __BASE64;  
+  //window.BASE64 = __BASE64;
   module.exports = {
     CusBASE64: __BASE64
   }
-})();  
+})();

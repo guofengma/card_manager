@@ -1,6 +1,6 @@
 <view class="index-bd">
     <view class="kind-list">
-    <button session-from='weapp' class="contact-btn" open-type='contact'>
+     <button session-from='weapp' class="contact-btn" open-type='contact'> 
         <view class="kind-list-item">
             <view class="kind-list-item-hd">
             <image  src="/images/kefu.png" style="width:30px;height:30px;margin-right:5px"></image>
@@ -8,8 +8,35 @@
             <image class="kind-list-img" src="/images/tip.png"></image>
           </view>
           </view>
+           </button> 
+
+           <!-- <view class="line"></view> -->
+  <navigator url="/pages/zanshang/zanshang">
+ <button  class="contact-btn">
+        <view class="kind-list-item">
+            <view class="kind-list-item-hd">
+            <image  src="/images/contact_me.png" style="width:30px;height:30px;margin-right:5px"></image>
+            <view class="kind-list-text">联系我</view>
+            <image class="kind-list-img" src="/images/tip.png"></image>
+          </view>
+          </view>
           </button>
+          </navigator>
+          
         </view>
         
-        <view class="line"></view>
+        <!-- <view class="line"></view>  -->
+
+
+
+<view class ="container">
+        <image src = "/images/zanshang.jpeg" mode='aspectFit' bindtap="previewImage" style="align:center"></image>
+</view>
+        
+       
+
+   
+
   </view>
+
+  

@@ -142,5 +142,40 @@ Page({
       urls: urls// 需要预览的图片http链接列表
     })
   },
+//一键复制
+  copy:function(res){
+    var _this = this;
+    var value = res.target.dataset.value;
+    var banks = _this.data.bank;
+    var copyvalue = '';
+    for (var item in banks) {
+      if(banks[item].item==''){
+        copyvalue +=  banks[item].itemstring + "\n"
+      }else{
+        copyvalue += banks[item].item + ":\t" + banks[item].itemstring + "\n"
+      }
+      
+    }
+    console.log(copyvalue);
+    wx.setClipboardData({
+      data: copyvalue,
+      success:function(res){
+        // wx.showModal({
+        //   title: '复制成功',
+        //   content: copyvalue,
+        //   success: function (res) {
+        //     if (res.confirm) {
+        //       _this.onShareAppMessage()
+        //     } else if (res.cancel) {
+        //       console.log('用户点击取消')
+        //     }
+        //   }
+        // })
+        wx.showToast({
+          title: '复制成功',
+        })
+      }
+    })
+  }
 
 })

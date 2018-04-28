@@ -7,7 +7,8 @@
     "pages/cardDetail/cardDetail",
     "pages/addcard/visitingCard/visitingCard",
     "pages/addcard/vipCard/vipCard",
-    "pages/my/my"
+    "pages/my/my",
+    "pages/zanshang/zanshang"
   ],
   "window": {
     "backgroundTextStyle": "light",

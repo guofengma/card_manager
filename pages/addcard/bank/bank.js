@@ -1,5 +1,4 @@
 // pages/addcard/bank/bank.js
-var Base64=require("../../../utils/base64.js");
 const util = require('../../../utils/util.js');
 var MD5 = require('../../../utils/md5.js');
 var Bmob = require("../../../utils/bmob.js");
@@ -29,7 +28,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log("卡类型:" + getApp().globalData.cardType[options.cardTypeIndex]);
+    // console.log("卡类型:" + getApp().globalData.cardType[options.cardTypeIndex]);
     this.setData({
       cardTypeIndex: options.cardTypeIndex,
       chooseImageSrc:options.imageUrl,
@@ -49,13 +48,40 @@ Page({
       user.getUserInfo()
     }
 
+
+    // let that = this
+    // this.imgPath = options.imgPath
+    // this.cardScanner = new CardScanner(this)
+    //   .on('ImageChanged', (imgPath) => {
+    //     that.imgPath = imgPath
+    //     console.log(imgPath)
+    //   })
+    //   .on('DecodeStart', (imgPath) => {
+    //     wx.showLoading({
+    //       title: '解析中',
+    //       mask: true
+    //     })
+    //   })
+    //   .on('DecodeComplete', (res) => {
+    //     if (res.code == 0) {
+    //       wx.showModal({
+    //         title: '',
+    //         content: JSON.stringify(res.data),
+    //       })
+    //     } else {
+    //       console.log('解析失败：' + res.reason)
+    //     }
+    //     wx.hideLoading()
+    //   })
+
+   
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-  
+    //this.cardScanner.setImage(this.imgPath)
   },
 
   /**
@@ -109,8 +135,12 @@ Page({
       success: function(res) {
         console.log(res.tempFilePaths + "  \n" + res.tempFiles[0]);
         var tempFilePaths = res.tempFilePaths;
-        //var Path = Base64.CusBASE64.encoder(tempFilePaths);
-        
+
+        //设置canvas路径
+        // let scanner = _this.cardScanner
+        // scanner.onImageChanged && scanner.onImageChanged(res.tempFilePaths[0])
+        // scanner.setImage(res.tempFilePaths[0])
+
 
         _this.setData({
           chooseImageSrc: tempFilePaths,
@@ -120,22 +150,16 @@ Page({
         var name = util.common.getTimestamp()+".png";
         var file = new Bmob.File(name, tempFilePaths);
         wx.showLoading({
-          title: '解析中...',
+          title: '解析中...'+tempFilePaths,
         })
         file.save().then(function (res) {
+         
           var imageUrl = res.url();
-          console.log(res.url());
+          console.log(imageUrl);
           //上传图片成功
           _this.setData({
-            imageUrl: res.url(),
+            imageUrl: imageUrl,
           })
-          // var picturePath = tempFilePaths[0];
-          // console.log(picturePath);
-          // var reader = new FileReader()
-          // var arrayBuffer = reader.result;
-          // var base64 = wx.arrayBufferToBase64(arrayBuffer);
-          // console.log(base64);
-          // _this.getBankInfoByAi(base64);
           try {
             var res = wx.getSystemInfoSync()
             console.log(res.platform)
@@ -145,11 +169,29 @@ Page({
           } catch (e) {
             // Do something when catch error
           }
+          wx.showToast({
+            title: imageUrl,
+          })
+          console.log(imageUrl + "   " + tempFilePaths);
+          
+        // if (scanner.finishDraw) {
+        //   scanner.onDecodeStart && scanner.onDecodeStart()
+          
+        //   scanner._decodeTarget()
+        //   // console.log(base64);
+        // } else {
+        //   console.log('绘制未完成')
+        // }
+
+
           wx.request({
             url: imageUrl,
             method: 'GET',
             responseType: 'arraybuffer',
             success: function (res) {
+              wx.showLoading({
+                title: "123" + res.data,
+              })
               let base64 = wx.arrayBufferToBase64(res.data);
               _this.getBankInfoByAi(base64);
             },error:function(res){
@@ -170,7 +212,7 @@ Page({
 
 
         
-      
+    
 
         
         //_this.getBankInfoByAi(Path);
@@ -347,6 +389,13 @@ Page({
         // 转发失败
       }
     }
+  },
+  bindChooseImg:function(e){
+    console.log("1111111");
+    this.bindChooseImg()
+  },
+  bindConfirm:function(e){
+    this.bindConfirm();
   }
 
 })
