@@ -1,5 +1,5 @@
-var upng = require('./UPNG.js')
-var ocr = require('./ocr.js')
+var upng = require('./upng-js/UPNG.js')
+var ocr = require('./ocrapi/ocr.js')
 var Promise = require('./promise.js')
 
 const canvasID = 'scannerCanvas'
@@ -95,6 +95,7 @@ export default class CardScanner {
         resolve()
       } else {
         wx.createSelectorQuery().select('#' + canvasID).boundingClientRect((res) => {
+          console.log(res.width+" +++++ "+res.height)
           that.canvasSize = {
             radio: res.width / res.height,
             width: res.width,
@@ -108,7 +109,7 @@ export default class CardScanner {
 
   _calcTarget() {
     let target = {}
-    console.log(this.canvasSize.width + "   " + this.canvasSize.height)
+    console.log(this.canvasSize.width + "   " + this.canvasSize.height+"  "+this.img.radio+"   "+this.canvasSize.radio)
     if (this.img.radio > this.canvasSize.radio) {
       target['width'] = this.canvasSize.width
       target['height'] = parseInt(target['width'] / this.img.radio)

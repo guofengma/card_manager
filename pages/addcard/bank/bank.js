@@ -3,6 +3,7 @@ const util = require('../../../utils/util.js');
 var MD5 = require('../../../utils/md5.js');
 var Bmob = require("../../../utils/bmob.js");
 var user = require("../../../utils/user.js");
+const qiniuUploader = require("../../../utils/qiniuUploader.js");
 
 Page({
 
@@ -48,32 +49,6 @@ Page({
       user.getUserInfo()
     }
 
-
-    // let that = this
-    // this.imgPath = options.imgPath
-    // this.cardScanner = new CardScanner(this)
-    //   .on('ImageChanged', (imgPath) => {
-    //     that.imgPath = imgPath
-    //     console.log(imgPath)
-    //   })
-    //   .on('DecodeStart', (imgPath) => {
-    //     wx.showLoading({
-    //       title: '解析中',
-    //       mask: true
-    //     })
-    //   })
-    //   .on('DecodeComplete', (res) => {
-    //     if (res.code == 0) {
-    //       wx.showModal({
-    //         title: '',
-    //         content: JSON.stringify(res.data),
-    //       })
-    //     } else {
-    //       console.log('解析失败：' + res.reason)
-    //     }
-    //     wx.hideLoading()
-    //   })
-
    
   },
 
@@ -81,7 +56,6 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    //this.cardScanner.setImage(this.imgPath)
   },
 
   /**
@@ -135,12 +109,7 @@ Page({
       success: function(res) {
         console.log(res.tempFilePaths + "  \n" + res.tempFiles[0]);
         var tempFilePaths = res.tempFilePaths;
-
-        //设置canvas路径
-        // let scanner = _this.cardScanner
-        // scanner.onImageChanged && scanner.onImageChanged(res.tempFilePaths[0])
-        // scanner.setImage(res.tempFilePaths[0])
-
+        var filePath = res.tempFilePaths[0];
 
         _this.setData({
           chooseImageSrc: tempFilePaths,
@@ -148,67 +117,110 @@ Page({
         })
 
         var name = util.common.getTimestamp()+".png";
-        var file = new Bmob.File(name, tempFilePaths);
+        //var file = new Bmob.File(name, tempFilePaths);
         wx.showLoading({
-          title: '解析中...'+tempFilePaths,
+          title: '解析中，耐心等待...',
         })
-        file.save().then(function (res) {
-         
-          var imageUrl = res.url();
+
+        //qiniu upload start -------
+        // 交给七牛上传
+        qiniuUploader.upload(filePath, (res) => {
+          // 每个文件上传成功后,处理相关的事情
+          // 其中 info 是文件上传成功后，服务端返回的json，形式如
+          // {
+          //    "hash": "Fh8xVqod2MQ1mocfI4S4KpRL6D98",
+          //    "key": "gogopher.jpg"
+          //  }
+          // 参考http://developer.qiniu.com/docs/v6/api/overview/up/response/simple-response.html
+          var imageUrl = res.imageURL;
           console.log(imageUrl);
-          //上传图片成功
           _this.setData({
             imageUrl: imageUrl,
-          })
-          try {
-            var res = wx.getSystemInfoSync()
-            console.log(res.platform)
-            if (res.platform == 'devtools') {//模拟器
-              imageUrl = tempFilePaths[0];
-            }
-          } catch (e) {
-            // Do something when catch error
-          }
-          wx.showToast({
-            title: imageUrl,
-          })
-          console.log(imageUrl + "   " + tempFilePaths);
-          
-        // if (scanner.finishDraw) {
-        //   scanner.onDecodeStart && scanner.onDecodeStart()
-          
-        //   scanner._decodeTarget()
-        //   // console.log(base64);
-        // } else {
-        //   console.log('绘制未完成')
-        // }
+          });
 
-
-          wx.request({
-            url: imageUrl,
+            wx.request({
+              url: "https://weixin.shopin.net/wechatshop/getBase64ImgUrl.html?imgURL="+imageUrl,
             method: 'GET',
-            responseType: 'arraybuffer',
             success: function (res) {
               wx.showLoading({
-                title: "123" + res.data,
+                title: "解析中...",
               })
-              let base64 = wx.arrayBufferToBase64(res.data);
-              _this.getBankInfoByAi(base64);
+              //console.log(res.data);
+              //let base64 = wx.arrayBufferToBase64(res.data);
+              _this.getBankInfoByAi(res.data);
             },error:function(res){
               wx.hideLoading();
             },complete:function(res){
-              
+
             }
           });
 
-        }, function (error) {
-          console.log("base64:"+error);
-          wx.hideLoading();
-          wx.showToast({
-            title: error,
-            icon:'none'
-          })
-        })
+        }, (error) => {
+          console.log('error: ' + error);
+        }, {
+            region: 'ECN',
+            domain: 'http://p8c57y31f.bkt.clouddn.com', // // bucket 域名，下载资源时用到。如果设置，会在 success callback 的 res 参数加上可以直接使用的 ImageURL 字段。否则需要自己拼接
+            key: name, // [非必须]自定义文件 key。如果不设置，默认为使用微信小程序 API 的临时文件名
+            // 以下方法三选一即可，优先级为：uptoken > uptokenURL > uptokenFunc
+            //uptoken: '[yourTokenString]', // 由其他程序生成七牛 uptoken
+            uptokenURL: 'https://weixin.shopin.net/wechatshop/getQiniuToken.html', // 从指定 url 通过 HTTP GET 获取 uptoken，返回的格式必须是 json 且包含 uptoken 字段，例如： {"uptoken": "[yourTokenString]"}
+            //uptokenFunc: function () { return '[yourTokenString]'; }
+          }, (res) => {
+            console.log('上传进度', res.progress)
+            console.log('已经上传的数据长度', res.totalBytesSent)
+            console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
+          });
+      
+
+        //qiniu upload end -------
+        // file.save().then(function (res) {
+         
+        //   var imageUrl = res.url();
+        //   console.log(imageUrl);
+        //   //上传图片成功
+        //   _this.setData({
+        //     imageUrl: imageUrl,
+        //   })
+        //   try {
+        //     var res = wx.getSystemInfoSync()
+        //     console.log(res.platform)
+        //     if (res.platform == 'devtools') {//模拟器
+        //       imageUrl = tempFilePaths[0];
+        //     }
+        //   } catch (e) {
+        //     // Do something when catch error
+        //   }
+        //   console.log(imageUrl + "   " + tempFilePaths);
+          
+
+      
+
+
+        //   wx.request({
+        //     url: imageUrl,
+        //     method: 'GET',
+        //     responseType: 'arraybuffer',
+        //     success: function (res) {
+        //       wx.showLoading({
+        //         title: "123" + res.data,
+        //       })
+        //       let base64 = wx.arrayBufferToBase64(res.data);
+        //       _this.getBankInfoByAi(base64);
+        //     },error:function(res){
+        //       wx.hideLoading();
+        //     },complete:function(res){
+              
+        //     }
+        //   });
+
+        // }, function (error) {
+        //   console.log("base64:"+error);
+        //   wx.hideLoading();
+        //   wx.showToast({
+        //     title: error,
+        //     icon:'none'
+        //   })
+        // })
 
 
         
@@ -379,7 +391,7 @@ Page({
     var _this = this;
     var path = 'pages/cardDetail/cardDetail?cardTypeIndex=' + _this.data.cardTypeIndex + '&imageUrl=' + _this.data.imageUrl + '&objectId=' + _this.data.objectId + "&cardNo=" + _this.data.cardNo;
     return {
-      title: '许多卡',
+      title: '许多卡，一键扫描管理你的卡片',
       path: path,
       success: function (res) {
         // 转发成功

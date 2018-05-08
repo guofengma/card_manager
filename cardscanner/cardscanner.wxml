@@ -1,0 +1,11 @@
+<template name="cardscanner">
+  <view class='scanner' bindtap='addPicture'>
+    <canvas class='canvas' id='scannerCanvas' canvas-id='scannerCanvas' disable-scroll="true" quality="1"/>
+    <!-- <view class="buttons">
+      <view class="choose" bindtap="bindChooseImg">重新选择</view>
+      <view class="confirm" bindtap="bindConfirm">确定</view>
+    </view> -->
+
+  </view>
+  
+</template>

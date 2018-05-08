@@ -1,4 +1,5 @@
 /* pages/addcard/bank/bank.wxss */
+@import '../../../cardscanner/cardscanner.wxss';
 .view{
   padding: 13px;
 }

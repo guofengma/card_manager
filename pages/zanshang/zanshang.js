@@ -65,7 +65,7 @@ Page({
   },
   previewImage: function () {
     wx.previewImage({
-      urls: ['http://bmob-cdn-18395.b0.upaiyun.com/2018/04/27/9879635440ddff20802ac164f6702c4a.png']
+      urls: ['http://p8c57y31f.bkt.clouddn.com/weixin.jpeg']
       // 需要预览的图片http链接  使用split把字符串转数组。不然会报错  
     })
 

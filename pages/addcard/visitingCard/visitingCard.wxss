@@ -1,3 +1,4 @@
+@import '../../../cardscanner/cardscanner.wxss';
 .view{
   padding: 13px;
 }

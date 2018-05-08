@@ -77,7 +77,7 @@ Page({
   onShareAppMessage: function () {
     var _this = this;
     return {
-      title: '许多卡',
+      title: '许多卡，一键扫描管理你的卡片',
       path: 'pages/cardDetail/cardDetail?cardTypeIndex=' + _this.data.cardTypeIndex + '&imageUrl=' + _this.data.imageUrl + '&objectId=' + _this.data.objectId +"&cardNo="+_this.data.cardNo,
       success: function (res) {
         // 转发成功

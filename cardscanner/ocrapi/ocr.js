@@ -1,4 +1,4 @@
-let md5 = require('./md5.js')
+let md5 = require('../md5.js')
 let app_id = '1106808288'
 let app_key = 'PDkgQiFFJLz9jwr7'
 let url = 'https://api.ai.qq.com/fcgi-bin/ocr/ocr_bcocr'
