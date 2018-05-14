@@ -75,10 +75,21 @@ Page({
   
   },
   previewImage:function(){
+  
     wx.previewImage({
       urls: ['http://bmob-cdn-18395.b0.upaiyun.com/2018/04/27/f650a23e4093d48980560618f3993b12.png']
       // 需要预览的图片http链接  使用split把字符串转数组。不然会报错  
     })  
    
+  },
+  //添加卡号
+  addCard: function (e) {
+    wx.navigateTo({
+      url: '../cardType/cardType',
+      //url: '../addcard/bank/bank?cardTypeIndex='+res.tapIndex,
+      success: function (res) { },
+      fail: function (res) { },
+      complete: function (res) { },
+    })
   }
 })

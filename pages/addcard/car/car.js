@@ -1,10 +1,8 @@
-// pages/addcard/bank/bank.js
 const util = require('../../../utils/util.js');
 var MD5 = require('../../../utils/md5.js');
 var Bmob = require("../../../utils/bmob.js");
 var user = require("../../../utils/user.js");
 const qiniuUploader = require("../../../utils/qiniuUploader.js");
-//var uploadFn = require("../../../utils/upload.js");
 
 Page({
 
@@ -13,17 +11,17 @@ Page({
    */
   data: {
     //相册或者拍照获取路径
-    chooseImageSrc:'',
+    chooseImageSrc: '',
     //卡类型
-    cardTypeIndex:'',
-    imageUrl:'',
+    cardTypeIndex: '',
+    imageUrl: '',
     //是否展示图片
-    showView:false,
+    showView: false,
     //读取数据
-    bank:'',
-    ocrJson:'',
-    objectId:'',//主键id
-    bankNo:''//卡号
+    bank: '',
+    ocrJson: '',
+    objectId: '',//主键id
+    bankNo: ''//卡号
   },
 
   /**
@@ -33,24 +31,25 @@ Page({
     // console.log("卡类型:" + getApp().globalData.cardType[options.cardTypeIndex]);
     this.setData({
       cardTypeIndex: options.cardTypeIndex,
-      chooseImageSrc:options.imageUrl,
+      chooseImageSrc: options.imageUrl,
+      carType:options.type,
     })
     wx.setNavigationBarTitle({
       title: '添加' + getApp().globalData.cardType[options.cardTypeIndex],
-      success: function(e){
+      success: function (e) {
         console.log(e);
-      },fail:function(e){
+      }, fail: function (e) {
         console.log(e);
       }
     }
     )
 
     var openId = wx.getStorageSync('openId')
-    if(openId == ''){
+    if (openId == '') {
       user.getUserInfo()
     }
 
-   
+
   },
 
   /**
@@ -64,51 +63,51 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    
+
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-  
+
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-  
+
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-  
+
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-  
+
   },
 
   /**
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-  
+
   },
 
-  addPicture:function(){
-    var _this = this; 
-    wx:wx.chooseImage({
+  addPicture: function () {
+    var _this = this;
+    wx: wx.chooseImage({
       count: 1,
       sizeType: ['compressed'],
-      sourceType: ['album','camera'],
-      success: function(res) {
+      sourceType: ['album', 'camera'],
+      success: function (res) {
         console.log(res.tempFilePaths + "  \n" + res.tempFiles[0]);
         var tempFilePaths = res.tempFilePaths;
         var filePath = res.tempFilePaths[0];
@@ -119,16 +118,14 @@ Page({
         })
         var starttime = new Date().getTime();
         var openid = wx.getStorageSync('openid')
-        var name = openid+"_"+util.common.getTimestamp()+".jpg";
+        var name = openid + "_" +util.common.getTimestamp() + ".jpg";
         //var file = new Bmob.File(name, tempFilePaths);
         wx.showLoading({
           title: '解析中,请稍后...',
         })
 
-      
-
         //qiniu upload start -------
-        //交给七牛上传
+        // 交给七牛上传
         qiniuUploader.upload(filePath, (res) => {
           var imageUrl = res.imageURL;
           console.log(imageUrl);
@@ -137,39 +134,26 @@ Page({
           });
           console.log("上传图片花费：" + (new Date().getTime() - starttime))
           starttime = new Date().getTime()
-            wx.request({
-              url: "https://weixin.shopin.net/wechatshop/getBase64ImgUrl.html?imgURL="+imageUrl,
+          wx.request({
+            url: "https://weixin.shopin.net/wechatshop/getBase64ImgUrl.html?imgURL=" + imageUrl,
             method: 'GET',
             success: function (res) {
+              wx.showLoading({
+                title: "解析中...",
+              })
               console.log("获取base64:" + (new Date().getTime() - starttime))
               starttime = new Date().getTime()
               _this.getBankInfoByAi(res.data);
-            },error:function(res){
+            }, error: function (res) {
+              console.log("error " + res);
               wx.hideLoading();
-            },complete:function(res){
-              if (res.errMsg == 'request:fail timeout'){
+            }, complete: function (res) {
+              if (res.errMsg == 'request:fail timeout') {
                 wx.hideLoading()
               }
-              console.log(res.errMsg+"  complete "+res.statusCode)
+              console.log("complete "+res.errMsg+"  "+res.statusCode);
             }
           });
-
-        //     wx.request({
-        //       url: "https://cardmanager-1252859906.cos.ap-chengdu.myqcloud.com/WechatIMG256.jpeg?sign=q-sign-algorithm%3Dsha1%26q-ak%3DAKID2Zlq75YVXGFmotiNiiJdoCWcfPgm9J15%26q-sign-time%3D1526177213%3B1526179013%26q-key-time%3D1526177213%3B1526179013%26q-header-list%3D%26q-url-param-list%3D%26q-signature%3D92142f3264722dfdb167f6f5568e81db43badd70&token=f886bf62f62bcb1377e6a62173abe66af026f71e10001&clientIP=210.12.233.2&clientUA=9ce972c1-b3b8-44b4-b199-d692f7124c60",
-        //     method: 'GET',
-        //     responseType: 'arraybuffer',
-        //     success: function (res) {
-        //       wx.showLoading({
-        //         title: "123" + res.data,
-        //       })
-        //       let base64 = wx.arrayBufferToBase64(res.data);
-        //       _this.getBankInfoByAi(base64);
-        //     },error:function(res){
-        //       wx.hideLoading();
-        //     },complete:function(res){
-
-        //     }
-        //   });
 
         }, (error) => {
           console.log('error: ' + error);
@@ -183,75 +167,23 @@ Page({
             //uptokenFunc: function () { return '[yourTokenString]'; }
           }, (res) => {
             console.log('上传进度', res.progress)
+            //console.log('已经上传的数据长度', res.totalBytesSent)
+            //console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
           });
-      
+
 
         //qiniu upload end -------
-        // file.save().then(function (res) {
-         
-        //   var imageUrl = res.url();
-        //   console.log(imageUrl);
-        //   //上传图片成功
-        //   _this.setData({
-        //     imageUrl: imageUrl,
-        //   })
-        //   try {
-        //     var res = wx.getSystemInfoSync()
-        //     console.log(res.platform)
-        //     if (res.platform == 'devtools') {//模拟器
-        //       imageUrl = tempFilePaths[0];
-        //     }
-        //   } catch (e) {
-        //     // Do something when catch error
-        //   }
-        //   console.log(imageUrl + "   " + tempFilePaths);
-          
-
-      
-
-
-        //   wx.request({
-        //     url: imageUrl,
-        //     method: 'GET',
-        //     responseType: 'arraybuffer',
-        //     success: function (res) {
-        //       wx.showLoading({
-        //         title: "123" + res.data,
-        //       })
-        //       let base64 = wx.arrayBufferToBase64(res.data);
-        //       _this.getBankInfoByAi(base64);
-        //     },error:function(res){
-        //       wx.hideLoading();
-        //     },complete:function(res){
-              
-        //     }
-        //   });
-
-        // }, function (error) {
-        //   console.log("base64:"+error);
-        //   wx.hideLoading();
-        //   wx.showToast({
-        //     title: error,
-        //     icon:'none'
-        //   })
-        // })
-
-
         
-    
-
-        
-        //_this.getBankInfoByAi(Path);
       },
-      fail: function(res) {},
-      complete: function(res) {},
+      fail: function (res) { },
+      complete: function (res) { },
     })
   },
 
   //获取卡信息
-  getBankInfoByAi:function(base64){
+  getBankInfoByAi: function (base64) {
     var starttime = new Date().getTime();
-    var _this = this; 
+    var _this = this;
     wx.showLoading({
       title: '解析中...',
     })
@@ -259,56 +191,66 @@ Page({
     var appKey = getApp().globalData.aiAppKey;
     var timestamp = util.common.getTimestamp();
     var noncestr = util.common.createNonceStr();
+    var carType = _this.data.carType;
     var params = {
-      app_id:appId,
-      time_stamp:timestamp,
-      nonce_str:noncestr,
-      image:base64
+      app_id: appId,
+      time_stamp: timestamp,
+      nonce_str: noncestr,
+      image: base64,
+      type: carType,
     }
 
-    
+
     var sortParam = util.common.sortAscii(params) + "app_key=" + appKey;
     //console.log("sortParam:   "+sortParam);
     var signstr = MD5.md5(sortParam);
+   
     //console.log("signStr: "+ signstr)
     wx.request({
-      url: 'https://api.ai.qq.com/fcgi-bin/ocr/ocr_creditcardocr',
-      data:{
-        app_id:appId,
+      url: 'https://api.ai.qq.com/fcgi-bin/ocr/ocr_driverlicenseocr',
+      data: {
+        app_id: appId,
         time_stamp: timestamp,
         nonce_str: noncestr,
         sign: signstr,
-        image: base64
+        image: base64,
+        type: carType
       },
-      method:'POST',
-      header: { 'content-type':'application/x-www-form-urlencoded'},
-      success:function(res){
+      method: 'POST',
+      header: { 'content-type': 'application/x-www-form-urlencoded' },
+      success: function (res) {
         console.log("识别：" + (new Date().getTime() - starttime))
         starttime = new Date().getTime()
         console.log(res.data);
         var resultJson = res.data;
         var ret = res.data.ret;
-        if(ret ==0){
+        if (ret == 0) {
           var item_list = res.data.data.item_list;
           console.log(item_list)
           _this.setData({
             bank: item_list,
-            cardNo:item_list[0].itemstring,
+            cardNo: item_list[0].itemstring,
             ocrJson: resultJson,
           })
           _this.addCardInfo();
-        }else{
+        } else {
           _this.setData({
             bank: '',
             ocrJson: '',
           })
-          if(ret<0 || ret==16449){
+          if (ret < 0 || ret == 16449) {
             wx.showToast({
-              title: ret+' 识别失败，请上传正确的卡',
+              title: ret + ' 识别失败，请上传正确的卡',
               icon: 'none',
               duration: 2000
             })
-          }else{
+          }else if(ret == 30){
+            wx.showToast({
+              title: "系统挤爆了，重新试试",
+              icon: 'none',
+              duration: 2000
+            })
+          } else {
             var msg = res.data.msg;
             wx.showToast({
               title: msg,
@@ -317,21 +259,21 @@ Page({
             })
           }
         }
-        
-      },fail:function(res){
+
+      }, fail: function (res) {
         wx.hideLoading();
         wx.showToast({
           title: res.msg,
-          icon:'none'
+          icon: 'none'
         })
-        console.log("fail "+res);
-      },complete:function(res){
-        
+        console.log("fail " + res);
+      }, complete: function (res) {
+
       }
     })
   },
   //添加卡信息
-  addCardInfo: function (){
+  addCardInfo: function () {
     var _this = this;
     wx.showLoading({
       title: '解析中...',
@@ -342,21 +284,22 @@ Page({
     try {
       var openid = wx.getStorageSync('openid')
       console.log(openid);
-      if (openid !='') {
+      if (openid != '') {
         card.set("openId", openid);
         // Do something with return value
-      }else{
+      } else {
         user.getUserInfo();
       }
     } catch (e) {
       // Do something when catch error
     }
-   
+
     card.set("cardUrl", _this.data.imageUrl);
     try {
       var banks = _this.data.bank;
+      var cardTypeIndex = _this.data.cardTypeIndex;
       card.set("ocrInfo", JSON.stringify(banks));
-      card.set("cardTypeIndex",1);
+      card.set("cardTypeIndex", parseInt(cardTypeIndex));
       card.set("flag", 1);
 
       var showInfo = [];
@@ -370,33 +313,33 @@ Page({
       card.set("cardInfo", _this.data.bank[3].itemstring);
       card.set("showInfo", JSON.stringify(showInfo));
       card.set("validityDate", _this.data.bank[4].itemstring);
-      
-    }catch(e){
+
+    } catch (e) {
 
     }
     //添加数据，第一个入口参数为null
     card.save(null, {
       success: function (result) {
         // 添加成功，返回成功之后的objectId（注意：返回的属性名字是id，不是objectId），你还可以在Bmob的Web管理后台看到对应的数据
-        console.log("银行卡创建成功, objectId:" + result.id);
+        console.log("创建成功, objectId:" + result.id);
         _this.setData({
-          objectId:result.id
+          objectId: result.id
         })
         wx.hideLoading();
       },
       error: function (result, error) {
-        console.log(result+ " "+error);
+        console.log(result + " " + error.code);
         var msg = '';
-        if(error.code == 401){
-          msg = '您已经添加过该银行卡'
+        if (error.code == 401) {
+          msg = '您已经添加过'
         }
         // 添加失败
         wx.hideLoading();
-        wx.showToast({
-          title:  msg,
-          icon: 'none',
-          duration: 2000
-        })
+        // wx.showToast({
+        //   title: "创建失败" + msg,
+        //   icon: 'none',
+        //   duration: 2000
+        // })
       }
     });
   },
@@ -404,10 +347,10 @@ Page({
   onShareAppMessage: function (res) {
     if (res.from === 'button') {
       // 来自页面内转发按钮
-      console.log("123"+res.target)
+      console.log("123" + res.target)
     }
     var _this = this;
-    var path = 'pages/cardDetail/cardDetail?cardTypeIndex=' + _this.data.cardTypeIndex + '&imageUrl=' + _this.data.imageUrl + '&objectId=' + _this.data.objectId + "&cardNo=" + _this.data.cardNo+"&share=true";
+    var path = 'pages/cardDetail/cardDetail?cardTypeIndex=' + _this.data.cardTypeIndex + '&imageUrl=' + _this.data.imageUrl + '&objectId=' + _this.data.objectId + "&cardNo=" + _this.data.cardNo + "&share=true";
     return {
       title: '许多卡，一键扫描管理你的卡片',
       path: path,
@@ -420,11 +363,11 @@ Page({
       }
     }
   },
-  bindChooseImg:function(e){
+  bindChooseImg: function (e) {
     console.log("1111111");
     this.bindChooseImg()
   },
-  bindConfirm:function(e){
+  bindConfirm: function (e) {
     this.bindConfirm();
   }
 

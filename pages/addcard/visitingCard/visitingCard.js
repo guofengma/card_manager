@@ -54,7 +54,7 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
+    this.addPicture()
   },
 
   /**
@@ -103,7 +103,7 @@ Page({
     var _this = this;
     wx: wx.chooseImage({
       count: 1,
-      sizeType: ['original'],
+      sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
       success: function (res) {
         console.log(res.tempFilePaths + "  \n" + res.tempFiles[0]);
@@ -117,7 +117,8 @@ Page({
           showView: true
         })
 
-        var name = util.common.getTimestamp() + ".png";
+        var openid = wx.getStorageSync('openid')
+        var name = openid + "_" +util.common.getTimestamp() + ".jpg";
         var file = new Bmob.File(name, tempFilePaths);
         wx.showLoading({
           title: '解析中...',
@@ -151,7 +152,9 @@ Page({
             }, error: function (res) {
               wx.hideLoading();
             }, complete: function (res) {
-
+              if (res.errMsg == 'request:fail timeout') {
+                wx.hideLoading()
+              }
             }
           });
 
@@ -167,8 +170,8 @@ Page({
             //uptokenFunc: function () { return '[yourTokenString]'; }
           }, (res) => {
             console.log('上传进度', res.progress)
-            console.log('已经上传的数据长度', res.totalBytesSent)
-            console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
+            //console.log('已经上传的数据长度', res.totalBytesSent)
+            //console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
           });
 
 
@@ -337,6 +340,7 @@ Page({
       var banks = _this.data.bank;
       card.set("ocrInfo", JSON.stringify(banks));
       card.set("cardTypeIndex",2);//名片
+      card.set("flag", 1);
       var showInfo = [];
       for (var item in banks) {
         showInfo.push({ "item": banks[item].item, "itemstring": banks[item].itemstring });
@@ -363,15 +367,15 @@ Page({
         wx.hideLoading();
       },
       error: function (result, error) {
+        // 添加失败
+        wx.hideLoading();
         console.log(result + " " + error.message);
         var msg = error.message;
         if (error.code == 401) {
-          msg = '您已经添加过'
+          msg = '您已经添加过该名片'
         }
-        // 添加失败
-        wx.hideLoading();
         wx.showToast({
-          title: "创建失败" + msg,
+          title: msg,
           icon: 'none',
           duration: 2000
         })
@@ -385,7 +389,7 @@ Page({
       console.log("123" + res.target)
     }
     var _this = this;
-    var path = 'pages/cardDetail/cardDetail?cardTypeIndex=' + _this.data.cardTypeIndex + '&imageUrl=' + _this.data.imageUrl + '&objectId=' + _this.data.objectId + "&cardNo=" + _this.data.cardNo;
+    var path = 'pages/cardDetail/cardDetail?cardTypeIndex=' + _this.data.cardTypeIndex + '&imageUrl=' + _this.data.imageUrl + '&objectId=' + _this.data.objectId + "&cardNo=" + _this.data.cardNo + "&share=true";
     return {
       title: '许多卡，一键扫描管理你的卡片',
       path: path,
@@ -397,6 +401,16 @@ Page({
         // 转发失败
       }
     }
+  },
+  //拨打电话
+  callPhone: function (res) {
+    var name = res.target.dataset.name;
+    if (name == '手机' || name == '电话') {
+      wx.makePhoneCall({
+        phoneNumber: res.target.dataset.value
+      })
+    }
+
   }
 
 })

@@ -18,12 +18,18 @@ Page({
    */
   onLoad: function (options) {
     var _this = this;
-    console.log(options.objectId);
+    
+    var share = options.share;
+    if (share == undefined){
+      share = false;
+    }
+    console.log(options.objectId + " " + share);
     _this.setData({
       objectId:options.objectId,
       cardTypeIndex: options.cardTypeIndex,
       imageUrl: options.imageUrl,
-      cardNo:options.cardNo
+      cardNo:options.cardNo,
+      share:share
     })
     _this.getCardInfoById(options.objectId, options.cardNo);
       
@@ -78,7 +84,7 @@ Page({
     var _this = this;
     return {
       title: '许多卡，一键扫描管理你的卡片',
-      path: 'pages/cardDetail/cardDetail?cardTypeIndex=' + _this.data.cardTypeIndex + '&imageUrl=' + _this.data.imageUrl + '&objectId=' + _this.data.objectId +"&cardNo="+_this.data.cardNo,
+      path: 'pages/cardDetail/cardDetail?cardTypeIndex=' + _this.data.cardTypeIndex + '&imageUrl=' + _this.data.imageUrl + '&objectId=' + _this.data.objectId +"&cardNo="+_this.data.cardNo+"&share=true",
       success: function (res) {
         // 转发成功
       },
@@ -176,6 +182,22 @@ Page({
         })
       }
     })
+  },
+  //回到首页
+  backHome:function(res){
+    wx.reLaunch({
+      url: '../../pages/index/index'
+    })
+  },
+  //拨打电话
+  callPhone:function(res){
+    var name = res.target.dataset.name;
+    if(name == '手机'||name== '电话'){
+      wx.makePhoneCall({
+        phoneNumber: res.target.dataset.value
+      })
+    }
+    
   }
 
 })

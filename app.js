@@ -1,4 +1,6 @@
 //app.js
+//var aldstat = require("./utils/ald-stat.js");//阿拉丁统计
+//log.aldwx.com
 var user = require("utils/user.js");
 const Bmob = require('utils/bmob.js')
 Bmob.initialize("8951d695245d0897ac98bc19fa944f83", "39cedc89e3fadf588e85f5d65ba44b69");
@@ -45,37 +47,38 @@ App({
         url: '../addcard/bank/bank?cardTypeIndex=0',
         icon: '../../images/cardlogo/bank_logo.png'
       },
-      // {
-      //   name: '身份证',
-      //   url: '../addcard/bank/bank?cardTypeIndex=1',
-      //   icon: '../../images/cardlogo/id_card_logo.png'
-      // },
       {
-        name: '各种会员卡',
-        url: '../addcard/vipCard/vipCard?cardTypeIndex=2',
-        icon: '../../images/cardlogo/more_card_logo.png'
+        name: '身份证',
+        url: '../addcard/idcard/idcard?cardTypeIndex=1',
+        icon: '../../images/cardlogo/id_card_logo.png'
       },
-      // {
-      //   name: '行驶证',
-      //   url: '../addcard/bank/bank?cardTypeIndex=3',
-      //   icon: '../../images/cardlogo/car_card_logo.png'
-      // },
-      // {
-      //   name: '驾驶证',
-      //   url: '../addcard/bank/bank?cardTypeIndex=4',
-      //   icon: '../../images/cardlogo/move_card_logo.png'
-      // },
       {
         name: '名片',
         url: '../addcard/visitingCard/visitingCard?cardTypeIndex=5',
         icon: '../../images/cardlogo/mingpian_logo.png'
       },
-      // {
-      //   name: '营业执照',
-      //   // url: '../addcard/bank/bank?cardTypeIndex=6',
-      //   url: '../cardDetail/cardDetail?cardTypeIndex=0&imageUrl=http://bmob-cdn-18395.b0.upaiyun.com/2018/04/24/c048c36040565be38068e2f7fabdb585.png&objectId=8d8b055293',
-      //   icon: '../../images/cardlogo/yyzz_logo.png'
-      // },
+      {
+        name: '各种会员卡',
+        url: '../addcard/vipCard/vipCard?cardTypeIndex=2',
+        icon: '../../images/cardlogo/more_card_logo.png'
+      },
+      {
+        name: '行驶证',
+        url: '../addcard/car/car?cardTypeIndex=3&type=0',
+        icon: '../../images/cardlogo/car_card_logo.png'
+      },
+      {
+        name: '驾驶证',
+        url: '../addcard/car/car?cardTypeIndex=4&type=1',
+        icon: '../../images/cardlogo/move_card_logo.png'
+      },
+      
+      {
+        name: '营业执照',
+        url: '../addcard/yyzz/yyzz?cardTypeIndex=6',
+        // url: '../cardDetail/cardDetail?cardTypeIndex=0&imageUrl=http://bmob-cdn-18395.b0.upaiyun.com/2018/04/24/c048c36040565be38068e2f7fabdb585.png&objectId=8d8b055293',
+        icon: '../../images/cardlogo/yyzz_logo.png'
+      },
       
       {
         name: '更多敬请期待',

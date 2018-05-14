@@ -2,13 +2,15 @@
 //获取应用实例
 const app = getApp()
 const Bmob = require('../../utils/bmob.js')
+const user = require('../../utils/user.js')
 Page({
   data: {
     motto: 'Hello World',
     userInfo: {},
     hasUserInfo: false,
     datas:[],
-    canIUse: wx.canIUse('button.open-type.getUserInfo')
+    canIUse: wx.canIUse('button.open-type.getUserInfo'),
+    showEmpty:false,
   },
   //事件处理函数
   bindViewTap: function() {
@@ -43,11 +45,15 @@ Page({
         }
       })
     }
+   
+    console.log("onLoad")
     var _this = this;
     _this.getCardsByOpenId();
 
-
-
+  },
+  onShow:function(){
+    console.log("onShow")
+    
   },
   getUserInfo: function(e) {
     console.log(e)
@@ -67,7 +73,12 @@ Page({
     var Card = Bmob.Object.extend("card")
     var query = new Bmob.Query(Card);
     var openId = wx.getStorageSync('openid');
+    if (openId == '') {
+      user.getUserInfo()
+      return;
+    }
     query.equalTo("openId",openId);
+    query.equalTo("flag",1);//有效
     query.descending("updatedAt");
     query.find({
       success:function(results){
@@ -76,6 +87,10 @@ Page({
         _this.setData({
           datas:results
         })
+        _this.setData({
+          showEmpty: results.length==0
+        })
+      
         _this.finishRefresh();
       },error:function(error){
         wx.hideLoading()
@@ -111,6 +126,51 @@ Page({
         console.log(res.errMsg);
       }
     })*/
+  },
+  //删除卡号
+  deleteCard:function(event){
+    var objectId = event.currentTarget.dataset.objectid
+    console.log(objectId)
+    var _this = this;
+    wx.showModal({
+      title: '提示',
+      content: '确定删除？',
+      success:function(res){
+        if(res.confirm){
+          var Card = Bmob.Object.extend("card")
+          var query = new Bmob.Query(Card);
+          query.get(objectId,{
+            success:function(result){
+      
+              result.set('flag',0);
+              result.set('cardNo','')
+              result.save();
+              console.log(result);
+              _this.getCardsByOpenId();
+              wx.showToast({
+                title: '删除成功',
+                icon: 'success',
+                duration: 2000
+              })
+            },error:function(object,error){
+
+            }
+          })
+        }else{
+
+        }
+      }
+    })
+    
+  },
+  //跳转详情
+  cardItem:function(res){
+    var objectId = res.currentTarget.dataset.objectid;
+    var cardTypeIndex = res.currentTarget.dataset.cardtypeindex;
+    var cardUrl = res.currentTarget.dataset.cardurl;
+  wx.navigateTo({
+      url: '../cardDetail/cardDetail?cardTypeIndex='+cardTypeIndex+'&imageUrl='+cardUrl+'&objectId='+objectId,
+  })
   },
 
   /**

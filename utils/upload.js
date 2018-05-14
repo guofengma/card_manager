@@ -6,11 +6,11 @@
  * BUCKET_NAME: cos bucket的名字
  * DIR_NAME: 上传的文件目录
  */
-var cosUrl = "https://" + "ap-chengdu" + ".file.myqcloud.com/files/v2/" + "1252859906" + "/" + "cardmanager-1252859906" + "card"
+var cosUrl = "https://" + "ap-chengdu" + ".file.myqcloud.com/files/v2/" + "1252859906" + "/" + "cardmanager-1252859906" +"/card"
 
 //填写自己的鉴权服务器地址
-var cosSignatureUrl = 'https://www.xxxx.com' 
-
+// var cosSignatureUrl = 'https://weixin.shopin.net/wechatshop/getTencentSign.html' 
+var cosSignatureUrl = 'http://localhost:8083/wechatshop/getTencentSign.html' 
 /**
  * 上传方法
  * filePath: 上传的文件路径
@@ -25,6 +25,7 @@ function upload(filePath, fileName) {
 
             // 签名
             var signature = cosRes.data
+            console.log(signature);
 
             // 头部带上签名，上传文件至COS
             wx.uploadFile({
@@ -40,6 +41,9 @@ function upload(filePath, fileName) {
                 success: function(uploadRes){
                     var data = uploadRes.data
                     console.log('uploadRes', uploadRes)
+                    var upload_res = JSON.parse(data)
+                    var imageUrl = upload_res.data.source_url;
+                    console.log(imageUrl);
                     //do something
                 },
                 fail: function(e) {

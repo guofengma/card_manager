@@ -9,12 +9,16 @@
     "pages/addcard/vipCard/vipCard",
     "pages/my/my",
     "pages/zanshang/zanshang",
-    "pages/demo/demo"
+    "pages/demo/demo",
+    "pages/addcard/car/car",
+    "pages/aboutus/aboutus",
+    "pages/addcard/idcard/idcard",
+    "pages/addcard/yyzz/yyzz"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#1296db",
-    "navigationBarTitleText": "许多卡",
+    "navigationBarTitleText": "小小钱包",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
@@ -36,8 +40,8 @@
     ]
   },
   "networkTimeout": {
-    "request": 10000,
+    "request": 20000,
     "downloadFile": 10000
   },
-  "debug": false
+  "debug": true
 }

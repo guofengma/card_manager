@@ -55,7 +55,7 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
+    this.addPicture()
   },
 
   /**
@@ -104,7 +104,7 @@ Page({
     var _this = this;
     wx: wx.chooseImage({
       count: 1,
-      sizeType: ['original'],
+      sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
       success: function (res) {
         console.log(res.tempFilePaths + "  \n" + res.tempFiles[0]);
@@ -117,9 +117,9 @@ Page({
           chooseImageSrc: tempFilePaths,
           showView: true
         })
-
-        var name = util.common.getTimestamp() + ".png";
-        var file = new Bmob.File(name, tempFilePaths);
+        var starttime = new Date().getTime();
+        var openid = wx.getStorageSync('openid')
+        var name = openid + "_" +util.common.getTimestamp() + ".jpg";
         wx.showLoading({
           title: '解析中...',
         })
@@ -139,7 +139,8 @@ Page({
           _this.setData({
             imageUrl: imageUrl,
           });
-
+          console.log("上传图片花费：" + (new Date().getTime()-starttime))
+          starttime = new Date().getTime()
           wx.request({
             url: "https://weixin.shopin.net/wechatshop/getBase64ImgUrl.html?imgURL=" + imageUrl,
             method: 'GET',
@@ -149,11 +150,15 @@ Page({
               })
               //console.log(res.data);
               //let base64 = wx.arrayBufferToBase64(res.data);
+              console.log("获取base64：" + (new Date().getTime() - starttime))
+              starttime = new Date().getTime()
               _this.getBankInfoByAi(res.data);
             }, error: function (res) {
               wx.hideLoading();
             }, complete: function (res) {
-
+              if (res.errMsg == 'request:fail timeout') {
+                wx.hideLoading()
+              }
             }
           });
 
@@ -168,9 +173,9 @@ Page({
             uptokenURL: 'https://weixin.shopin.net/wechatshop/getQiniuToken.html', // 从指定 url 通过 HTTP GET 获取 uptoken，返回的格式必须是 json 且包含 uptoken 字段，例如： {"uptoken": "[yourTokenString]"}
             //uptokenFunc: function () { return '[yourTokenString]'; }
           }, (res) => {
-            console.log('上传进度', res.progress)
-            console.log('已经上传的数据长度', res.totalBytesSent)
-            console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
+            //console.log('上传进度', res.progress)
+            //console.log('已经上传的数据长度', res.totalBytesSent)
+            //console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
           });
 
 
@@ -236,6 +241,7 @@ Page({
 
   //获取卡信息
   getBankInfoByAi: function (base64) {
+    var starttime = new Date().getTime();
     var _this = this;
     wx.showLoading({
       title: '解析中...',
@@ -269,6 +275,8 @@ Page({
       header: { 'content-type': 'application/x-www-form-urlencoded' },
       success: function (res) {
         console.log(res.data);
+        console.log("识别：" + (new Date().getTime() - starttime))
+        starttime = new Date().getTime()
         var resultJson = res.data;
         var ret = res.data.ret;
         if (ret == 0) {
@@ -339,13 +347,14 @@ Page({
     try {
       var banks = _this.data.bank;
       card.set("ocrInfo", JSON.stringify(banks));
-      card.set("cardTypeIndex",3);
+      card.set("cardTypeIndex",5);//会员卡
       var showInfo =[];
       for (var item in banks) {
         showInfo.push({ "item": banks[item].item, "itemstring": banks[item].itemstring});
       }
       console.log(JSON.stringify(showInfo));
       card.set("showInfo",JSON.stringify(showInfo));
+      card.set("flag",1);
       // card.set("cardType", _this.data.bank[1].itemstring);
       // card.set("cardName", _this.data.bank[2].itemstring);
       // card.set("cardInfo", _this.data.bank[3].itemstring);
@@ -355,11 +364,13 @@ Page({
     } catch (e) {
       console.log(e);
     }
+    var starttime = new Date().getTime();
     //添加数据，第一个入口参数为null
     card.save(null, {
       success: function (result) {
         // 添加成功，返回成功之后的objectId（注意：返回的属性名字是id，不是objectId），你还可以在Bmob的Web管理后台看到对应的数据
-        console.log("银行卡创建成功, objectId:" + result.id);
+        console.log(result+"银行卡创建成功, objectId:" + result.id);
+        console.log("存储bmob：" + (new Date().getTime() - starttime))
         _this.setData({
           objectId: result.id
         })
@@ -388,7 +399,7 @@ Page({
       console.log("123" + res.target)
     }
     var _this = this;
-    var path = 'pages/cardDetail/cardDetail?cardTypeIndex=' + _this.data.cardTypeIndex + '&imageUrl=' + _this.data.imageUrl + '&objectId=' + _this.data.objectId + "&cardNo=" + _this.data.cardNo;
+    var path = 'pages/cardDetail/cardDetail?cardTypeIndex=' + _this.data.cardTypeIndex + '&imageUrl=' + _this.data.imageUrl + '&objectId=' + _this.data.objectId + "&cardNo=" + _this.data.cardNo + "&share=true";
     return {
       title: '许多卡，一键扫描管理你的卡片',
       path: path,

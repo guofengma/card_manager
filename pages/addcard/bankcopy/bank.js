@@ -4,7 +4,7 @@ var MD5 = require('../../../utils/md5.js');
 var Bmob = require("../../../utils/bmob.js");
 var user = require("../../../utils/user.js");
 const qiniuUploader = require("../../../utils/qiniuUploader.js");
-//var uploadFn = require("../../../utils/upload.js");
+var uploadFn = require("../../../utils/upload.js");
 
 Page({
 
@@ -125,34 +125,39 @@ Page({
           title: '解析中,请稍后...',
         })
 
-      
+        //tencent cloud upload  start
+        // 文件上传cos
+        uploadFn(filePath, name)
+
+        //tentcent clound upload end
+
 
         //qiniu upload start -------
-        //交给七牛上传
-        qiniuUploader.upload(filePath, (res) => {
-          var imageUrl = res.imageURL;
-          console.log(imageUrl);
-          _this.setData({
-            imageUrl: imageUrl,
-          });
-          console.log("上传图片花费：" + (new Date().getTime() - starttime))
-          starttime = new Date().getTime()
-            wx.request({
-              url: "https://weixin.shopin.net/wechatshop/getBase64ImgUrl.html?imgURL="+imageUrl,
-            method: 'GET',
-            success: function (res) {
-              console.log("获取base64:" + (new Date().getTime() - starttime))
-              starttime = new Date().getTime()
-              _this.getBankInfoByAi(res.data);
-            },error:function(res){
-              wx.hideLoading();
-            },complete:function(res){
-              if (res.errMsg == 'request:fail timeout'){
-                wx.hideLoading()
-              }
-              console.log(res.errMsg+"  complete "+res.statusCode)
-            }
-          });
+        // 交给七牛上传
+        // qiniuUploader.upload(filePath, (res) => {
+        //   var imageUrl = res.imageURL;
+        //   console.log(imageUrl);
+        //   _this.setData({
+        //     imageUrl: imageUrl,
+        //   });
+        //   console.log("上传图片花费：" + (new Date().getTime() - starttime))
+        //   starttime = new Date().getTime()
+        //   //   wx.request({
+        //   //     url: "https://weixin.shopin.net/wechatshop/getBase64ImgUrl.html?imgURL="+imageUrl,
+        //   //   method: 'GET',
+        //   //   success: function (res) {
+        //   //     console.log("获取base64:" + (new Date().getTime() - starttime))
+        //   //     starttime = new Date().getTime()
+        //   //     _this.getBankInfoByAi(res.data);
+        //   //   },error:function(res){
+        //   //     wx.hideLoading();
+        //   //   },complete:function(res){
+        //   //     if (res.errMsg == 'request:fail timeout'){
+        //   //       wx.hideLoading()
+        //   //     }
+        //   //     console.log(res.errMsg+"  complete "+res.statusCode)
+        //   //   }
+        //   // });
 
         //     wx.request({
         //       url: "https://cardmanager-1252859906.cos.ap-chengdu.myqcloud.com/WechatIMG256.jpeg?sign=q-sign-algorithm%3Dsha1%26q-ak%3DAKID2Zlq75YVXGFmotiNiiJdoCWcfPgm9J15%26q-sign-time%3D1526177213%3B1526179013%26q-key-time%3D1526177213%3B1526179013%26q-header-list%3D%26q-url-param-list%3D%26q-signature%3D92142f3264722dfdb167f6f5568e81db43badd70&token=f886bf62f62bcb1377e6a62173abe66af026f71e10001&clientIP=210.12.233.2&clientUA=9ce972c1-b3b8-44b4-b199-d692f7124c60",
@@ -171,19 +176,19 @@ Page({
         //     }
         //   });
 
-        }, (error) => {
-          console.log('error: ' + error);
-        }, {
-            region: 'ECN',
-            domain: 'http://p8c57y31f.bkt.clouddn.com', // // bucket 域名，下载资源时用到。如果设置，会在 success callback 的 res 参数加上可以直接使用的 ImageURL 字段。否则需要自己拼接
-            key: name, // [非必须]自定义文件 key。如果不设置，默认为使用微信小程序 API 的临时文件名
-            // 以下方法三选一即可，优先级为：uptoken > uptokenURL > uptokenFunc
-            //uptoken: '[yourTokenString]', // 由其他程序生成七牛 uptoken
-            uptokenURL: 'https://weixin.shopin.net/wechatshop/getQiniuToken.html', // 从指定 url 通过 HTTP GET 获取 uptoken，返回的格式必须是 json 且包含 uptoken 字段，例如： {"uptoken": "[yourTokenString]"}
-            //uptokenFunc: function () { return '[yourTokenString]'; }
-          }, (res) => {
-            console.log('上传进度', res.progress)
-          });
+        // }, (error) => {
+        //   console.log('error: ' + error);
+        // }, {
+        //     region: 'ECN',
+        //     domain: 'http://p8c57y31f.bkt.clouddn.com', // // bucket 域名，下载资源时用到。如果设置，会在 success callback 的 res 参数加上可以直接使用的 ImageURL 字段。否则需要自己拼接
+        //     key: name, // [非必须]自定义文件 key。如果不设置，默认为使用微信小程序 API 的临时文件名
+        //     // 以下方法三选一即可，优先级为：uptoken > uptokenURL > uptokenFunc
+        //     //uptoken: '[yourTokenString]', // 由其他程序生成七牛 uptoken
+        //     uptokenURL: 'https://weixin.shopin.net/wechatshop/getQiniuToken.html', // 从指定 url 通过 HTTP GET 获取 uptoken，返回的格式必须是 json 且包含 uptoken 字段，例如： {"uptoken": "[yourTokenString]"}
+        //     //uptokenFunc: function () { return '[yourTokenString]'; }
+        //   }, (res) => {
+        //     console.log('上传进度', res.progress)
+        //   });
       
 
         //qiniu upload end -------
@@ -393,7 +398,7 @@ Page({
         // 添加失败
         wx.hideLoading();
         wx.showToast({
-          title:  msg,
+          title: "创建银行卡失败" + msg,
           icon: 'none',
           duration: 2000
         })

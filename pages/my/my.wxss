@@ -1,3 +1,4 @@
+@import "/common.wxss";
 .index-hd {
   padding: 80rpx;
   text-align: center;
@@ -15,8 +16,8 @@
   flex: 1;
 }
 .kind-list-img {
-  width: 60rpx;
-  height: 60rpx;
+  width: 50rpx;
+  height: 50rpx;
 }
 .kind-list-item-hd {
   padding: 30rpx;
@@ -41,7 +42,11 @@
   line-height: 0rpx;
   text-align: center;
   background-color: #fff;
-  border-radius: 0px;
+  padding: 0px
+}
+
+button::after{
+border: none;
 }
 
 
@@ -199,4 +204,18 @@
 	text-align: center;
 	font-size: 18px;
 	line-height: 220%;
+}
+
+.post {
+    float: right;
+    background-color: #1296db;
+    position: fixed;
+    bottom: 30px;
+    right: 20px;  
+    border: 0 solid #ffffff;
+    border-radius: 50px;
+    box-shadow: 1px 1px 1px #cccccc;
+    width:14vw;
+    height:14vw;
+    font-size: 20px;
 }

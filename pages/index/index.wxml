@@ -1,27 +1,41 @@
 <!--index.wxml-->
 <view>
+  <view class ="{{showEmpty ? 'view_show' : 'view_hide'}}">
+    <view class="userinfo"  bindtap='addCard'>
+      <text style="color:#adada8;padding:20px">您未添加卡片,点击添加\n\n\n\n\n\n\n\n</text>
+    </view>
+    <view class="userinfo">
+      <text style="color:#adada8;padding:10px;font-size:12px">小小钱包宗旨：卡片电子化，一键分享给好友，释放厚重钱包</text>
+    </view>
+  </view>
   
-  <view class="card" wx:for="{{datas}}" wx:for-item="item" wx:key="item" >
-        <navigator url="../cardDetail/cardDetail?cardTypeIndex={{item.cardTypeIndex}}&imageUrl={{item.cardUrl}}&objectId={{item.objectId}}">
-        <view >
+  <view class="card" wx:for="{{datas}}" wx:for-item="item" wx:key="item"  >
+        <view data-cardtypeindex="{{item.cardTypeIndex}}" data-cardurl="{{item.cardUrl}}" data-objectid="{{item.objectId}}" bindtap='cardItem' bindlongpress='deleteCard' >
             <image class="image" mode="aspectFill" src="{{item.cardUrl}}" />
             <!-- <text class="time">{{item.showInfo}}</text>
             <view class="title">{{item.showInfo}}</view> -->
             <view wx:if="{{item.cardTypeIndex == 1}}">
                 <view class="title">{{item.cardName}} {{item.cardNo}}</view>
             </view>
-            <view wx:if="{{item.cardTypeIndex == 2}}">
+            <view wx:elif="{{item.cardTypeIndex == 2}}">
                 <view class="title"></view>
             </view>
-            <view wx:if="{{item.cardTypeIndex == 3}}">
-                
+            <view wx:elif="{{item.cardTypeIndex == 3 ||item.cardTypeIndex == 4}}">
+                <view class="title">{{item.cardNo}}</view>
+            </view>
+            <view wx:elif="{{item.cardTypeIndex == 3 ||item.cardTypeIndex == 4}}">
+                <view class="title">{{item.cardNo}}</view>
+            </view>
+            <view wx:elif="{{item.cardTypeIndex == 10}}">
+                <view class="title">{{item.cardName}} {{item.cardNo}} </view>
+            </view>
+            <view wx:elif="{{item.cardTypeIndex == 11}}">
+                <view class="title">{{item.cardNo}} {{item.cardName}} </view>
             </view>
         </view>
-        </navigator>
     </view>
 
-  <button class='.post' 
-    style="opacity: {{opacity}};color: white;"
-    bindtap="addCard"
-    >+</button>
+
+    <image class='.post' style="opacity: {{opacity}};color: white;" src="../../images/add_card.png"  bindtap="addCard" style="width:25px;height:25px;padding:10px"/>
+    
 </view>

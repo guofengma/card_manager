@@ -1,42 +1,64 @@
 <view class="index-bd">
-    <view class="kind-list">
-     <button session-from='weapp' class="contact-btn" open-type='contact'> 
-        <view class="kind-list-item">
-            <view class="kind-list-item-hd">
-            <image  src="/images/kefu.png" style="width:30px;height:30px;margin-right:5px"></image>
-            <view class="kind-list-text">联系客服</view>
-            <image class="kind-list-img" src="/images/tip.png"></image>
-          </view>
-          </view>
-           </button> 
+  <view class="weui-cells">
+    <button session-from='weapp' class="contact-btn" open-type='contact'>
+      <view class="weui-cell weui-cell_access">
 
-           <!-- <view class="line"></view> -->
-  <navigator url="/pages/zanshang/zanshang">
- <button  class="contact-btn">
-        <view class="kind-list-item">
-            <view class="kind-list-item-hd">
-            <image  src="/images/contact_me.png" style="width:30px;height:30px;margin-right:5px"></image>
-            <view class="kind-list-text">联系我</view>
-            <image class="kind-list-img" src="/images/tip.png"></image>
-          </view>
-          </view>
-          </button>
-          </navigator>
-          
+        <view class="weui-cell__hd">
+          <image class="weui-cell__icon" src="/images/kefu.png" style="width:25px;margin-right:5px;" />
         </view>
-        
-        <!-- <view class="line"></view>  -->
+        <view class="weui-cell__bd">
+          <text></text>
+        </view>
 
+        <view class="weui-cell_access__ft">意见反馈</view>
 
+      </view>
+    </button>
+    <navigator url="/pages/zanshang/zanshang">
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__hd">
+          <image class="weui-cell__icon" src="/images/contact_me.png" alt="" style="width:25px;margin-right:5px;display:block" />
+        </view>
+        <view class="weui-cell__bd">
+          <text></text>
+        </view>
+        <view class="weui-cell_access__ft">联系我</view>
+      </view>
+    </navigator>
 
-<view class ="container">
-        <image src = "/images/zanshang.jpeg" mode='aspectFit' bindtap="previewImage" style="align:center"></image>
-</view>
-        
-       
+    <navigator url="/pages/aboutus/aboutus">
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__hd">
+          <image class="weui-cell__icon" src="/images/about_app.png" alt="" style="width:25px;margin-right:5px;display:block" />
+        </view>
+        <view class="weui-cell__bd">
+          <text></text>
+        </view>
+        <view class="weui-cell_access__ft">关于小程序</view>
+      </view>
+    </navigator>
 
-   
+    <view class="weui-cell weui-cell_access" bindtap="previewImage">
+      <view class="weui-cell__hd">
+        <image class="weui-cell__icon" src="/images/zanshang_logo.png" alt="" style="width:25px;margin-right:5px;display:block" />
+      </view>
+      <view class="weui-cell__bd">
+        <text></text>
+      </view>
+      <view class="weui-cell_access__ft">赞赏</view>
+    </view>
 
   </view>
 
-  
+
+  <!-- <view class="line"></view>  -->
+  <view class="weui-cells__title" style="margin-top:80px">宗旨：卡片电子化，一键分享给好友，释放厚重钱包</view>
+
+
+
+  <image class='.post' style="opacity: {{opacity}};color: white;" src="../../images/add_card.png" bindtap="addCard" style="width:25px;height:25px;padding:10px" />
+
+
+
+
+</view>
