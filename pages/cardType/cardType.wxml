@@ -1,12 +1,24 @@
-<view >  
-  <view class="weui-grids">  
-    <view class="weui-grid" wx:for="{{routers}}" wx:key="name">  
-      <navigator url="{{item.url}}">  
-        <view class="weui-grid__icon">  
-          <image src="{{item.icon}}" mode="scaleToFill" />  
-        </view>  
-        <text class="weui-grid__label">{{item.name}}</text>  
-      </navigator>  
-    </view>  
-  </view>  
+<view>
+  <view class="weui-grids">
+    <view class="weui-grid" wx:for="{{routers}}" wx:key="name">
+      <block wx:if="{{item.app_id != undefined}}">
+        <navigator target="miniProgram" open-type="navigate" app-id="{{item.app_id}}" path="{{item.url}}" extra-data="" version="release">
+
+        <view class="weui-grid__icon">
+        <image src="{{item.icon}}" mode="scaleToFill" />
+      </view>
+      <text class="weui-grid__label">{{item.name}}</text>
+      </navigator>
+      </block>
+      <block wx:else>
+        <navigator url="{{item.url}}">
+
+        <view class="weui-grid__icon">
+        <image src="{{item.icon}}" mode="scaleToFill" />
+      </view>
+      <text class="weui-grid__label">{{item.name}}</text>
+      </navigator>
+      </block>
+    </view>
+  </view>
 </view>

@@ -48,7 +48,32 @@ Page({
    
     console.log("onLoad")
     var _this = this;
-    _this.getCardsByOpenId();
+    var openId = wx.getStorageSync('openid');
+    if (openId == '') {
+      wx.showLoading({
+        title: '加载中...',
+      })
+      var user = new Bmob.User();//实例化
+      // 登录
+      wx.login({
+        success: function (res) {
+          console.log(res);
+          user.loginWithWeapp(res.code).then(function (user) {
+            wx.hideLoading()
+            var openid = user.get("authData").weapp.openid;
+            _this.getCardsByOpenId();
+            //更新openid
+            wx.setStorageSync('openid', openid)
+
+          }, function (err) {
+            console.log(err, 'errr');
+          });
+
+        }
+      });
+    } else {
+      _this.getCardsByOpenId();
+    }
 
   },
   onShow:function(){
@@ -146,12 +171,17 @@ Page({
               result.set('cardNo','')
               result.save();
               console.log(result);
-              _this.getCardsByOpenId();
+              
               wx.showToast({
                 title: '删除成功',
                 icon: 'success',
                 duration: 2000
               })
+
+              setTimeout(function () {
+                _this.getCardsByOpenId();
+              }, 1500);
+
             },error:function(object,error){
 
             }

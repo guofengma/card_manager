@@ -79,10 +79,28 @@ App({
         // url: '../cardDetail/cardDetail?cardTypeIndex=0&imageUrl=http://bmob-cdn-18395.b0.upaiyun.com/2018/04/24/c048c36040565be38068e2f7fabdb585.png&objectId=8d8b055293',
         icon: '../../images/cardlogo/yyzz_logo.png'
       },
-      
+      {
+        name: '传图识字',
+        url: '/pages/index/index',
+        icon: '../../images/cardlogo/wenzi_logo.png',
+        app_id:'wx6bc5db901b3ccfde',
+      },
+      {
+        name: '美图壁纸',
+        url: '/pages/index/index',
+        icon: '../../images/bizhi_logo.png',
+        app_id: 'wxc35fd1193f81e100',
+      },
+      {
+        name: '斗图表情包',
+        url: '/pages/index/index',
+        icon: '../../images/doutu_logo.png',
+        app_id: 'wxd1940318aaeb6958',
+      },
       {
         name: '更多敬请期待',
-        url: '',
+        // url: '../addcard/bankcopy/bank?cardTypeIndex=0'
+        url:'',
         icon: '../../images/cardlogo/more_logo.png'
       }
       

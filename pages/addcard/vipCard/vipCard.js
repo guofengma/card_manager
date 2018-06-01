@@ -4,7 +4,24 @@ const util = require('../../../utils/util.js');
 var MD5 = require('../../../utils/md5.js');
 var Bmob = require("../../../utils/bmob.js");
 var user = require("../../../utils/user.js");
-const qiniuUploader = require("../../../utils/qiniuUploader.js");
+// const qiniuUploader = require("../../../utils/qiniuUploader.js");
+var COS = require("../../../utils/cos-wx-sdk-v5.js")
+var config = require("../../../utils/tencent-cloud-config.js")
+//const qiniuUploader = require("../../../utils/qiniuUploader.js");
+//var uploadFn = require("../../../utils/upload.js");
+
+var cos = new COS({
+  getAuthorization: function (params, callback) {//获取签名 必填参数
+    // 方法二（适用于前端调试）
+    var authorization = COS.getAuthorization({
+      SecretId: config.SecretId,
+      SecretKey: config.SecretKey,
+      Method: params.Method,
+      Key: params.Key
+    });
+    callback(authorization);
+  }
+});
 
 Page({
 
@@ -124,59 +141,125 @@ Page({
           title: '解析中...',
         })
 
+        cos.postObject({
+          Bucket: config.Bucket,
+          Region: config.Region,
+          Key: name,
+          FilePath: filePath,
+          onProgress: function (info) {
+            console.log(JSON.stringify(info));
+          },
+
+        }, function (err, data) {
+          console.log(err || data);
+          if (err && err.error) {
+            wx.showModal({ title: '返回错误', content: '请求失败：' + err.error.Message + '；状态码：' + err.statusCode, showCancel: false });
+          } else if (err) {
+            wx.showModal({ title: '请求出错', content: '请求出错：' + err + '；状态码：' + err.statusCode, showCancel: false });
+          } else {
+            console.log("上传图片花费：" + (new Date().getTime() - starttime))
+            starttime = new Date().getTime()
+            var imageUrl = "https://cardmanager-1252859906.cos.ap-chengdu.myqcloud.com/" + name;
+            console.log(imageUrl);
+            _this.setData({
+              imageUrl: imageUrl,
+            });
+            wx.request({
+              url: imageUrl,
+              method: 'GET',
+              responseType: 'arraybuffer',
+              success: function (res) {
+                console.log("获取base64：" + (new Date().getTime() - starttime))
+                let base64 = wx.arrayBufferToBase64(res.data);
+                _this.getBankInfoByAi(base64);
+              }, error: function (res) {
+                wx.hideLoading();
+              }, complete: function (res) {
+
+              }
+            });
+          }
+        });
+
+        // wx.uploadFile({
+        //   url: "https://weixin.shopin.net/wechatshop/wx_upload",
+        //   filePath: filePath,
+        //   name: 'file',
+        //   formData: {
+        //     'openId': openid
+        //   },
+        //   success: function (uploadRes) {
+        //     var data = uploadRes.data
+        //     var upload_res = JSON.parse(data)
+        //     var imageUrl = upload_res.imgUrl;
+        //     console.log(imageUrl);
+        //     _this.setData({
+        //       imageUrl: imageUrl,
+        //     });
+        //     var base64 = upload_res.base64;
+
+        //     console.log("获取base64:" + (new Date().getTime() - starttime))
+        //     starttime = new Date().getTime()
+        //     _this.getBankInfoByAi(base64);
+        //   },
+        //   fail: function (e) {
+        //     console.log('e', e)
+        //   }
+        // })
+
         //qiniu upload start -------
         // 交给七牛上传
-        qiniuUploader.upload(filePath, (res) => {
-          // 每个文件上传成功后,处理相关的事情
-          // 其中 info 是文件上传成功后，服务端返回的json，形式如
-          // {
-          //    "hash": "Fh8xVqod2MQ1mocfI4S4KpRL6D98",
-          //    "key": "gogopher.jpg"
-          //  }
-          // 参考http://developer.qiniu.com/docs/v6/api/overview/up/response/simple-response.html
-          var imageUrl = res.imageURL;
-          console.log(imageUrl);
-          _this.setData({
-            imageUrl: imageUrl,
-          });
-          console.log("上传图片花费：" + (new Date().getTime()-starttime))
-          starttime = new Date().getTime()
-          wx.request({
-            url: "https://weixin.shopin.net/wechatshop/getBase64ImgUrl.html?imgURL=" + imageUrl,
-            method: 'GET',
-            success: function (res) {
-              wx.showLoading({
-                title: "解析中...",
-              })
-              //console.log(res.data);
-              //let base64 = wx.arrayBufferToBase64(res.data);
-              console.log("获取base64：" + (new Date().getTime() - starttime))
-              starttime = new Date().getTime()
-              _this.getBankInfoByAi(res.data);
-            }, error: function (res) {
-              wx.hideLoading();
-            }, complete: function (res) {
-              if (res.errMsg == 'request:fail timeout') {
-                wx.hideLoading()
-              }
-            }
-          });
+        // qiniuUploader.upload(filePath, (res) => {
+        //   // 每个文件上传成功后,处理相关的事情
+        //   // 其中 info 是文件上传成功后，服务端返回的json，形式如
+        //   // {
+        //   //    "hash": "Fh8xVqod2MQ1mocfI4S4KpRL6D98",
+        //   //    "key": "gogopher.jpg"
+        //   //  }
+        //   // 参考http://developer.qiniu.com/docs/v6/api/overview/up/response/simple-response.html
+        //   var imageUrl = res.imageURL;
+        //   console.log(imageUrl);
+        //   _this.setData({
+        //     imageUrl: imageUrl,
+        //   });
+        //   console.log("上传图片花费：" + (new Date().getTime()-starttime))
+        //   starttime = new Date().getTime()
+        //   wx.request({
+        //     url: "https://weixin.shopin.net/wechatshop/getBase64ImgUrl.html?imgURL=" + imageUrl,
+        //     method: 'GET',
+        //     success: function (res) {
+        //       wx.showLoading({
+        //         title: "解析中...",
+        //       })
+        //       //console.log(res.data);
+        //       //let base64 = wx.arrayBufferToBase64(res.data);
+        //       console.log("获取base64：" + (new Date().getTime() - starttime))
+        //       starttime = new Date().getTime()
+        //       _this.getBankInfoByAi(res.data);
+        //     }, error: function (res) {
+        //       wx.hideLoading();
+        //     }, complete: function (res) {
+        //       if (res.errMsg == 'request:fail timeout') {
+        //         wx.hideLoading()
+        //       }
+        //     }
+        //   });
 
-        }, (error) => {
-          console.log('error: ' + error);
-        }, {
-            region: 'ECN',
-            domain: 'http://p8c57y31f.bkt.clouddn.com', // // bucket 域名，下载资源时用到。如果设置，会在 success callback 的 res 参数加上可以直接使用的 ImageURL 字段。否则需要自己拼接
-            key: name, // [非必须]自定义文件 key。如果不设置，默认为使用微信小程序 API 的临时文件名
-            // 以下方法三选一即可，优先级为：uptoken > uptokenURL > uptokenFunc
-            //uptoken: '[yourTokenString]', // 由其他程序生成七牛 uptoken
-            uptokenURL: 'https://weixin.shopin.net/wechatshop/getQiniuToken.html', // 从指定 url 通过 HTTP GET 获取 uptoken，返回的格式必须是 json 且包含 uptoken 字段，例如： {"uptoken": "[yourTokenString]"}
-            //uptokenFunc: function () { return '[yourTokenString]'; }
-          }, (res) => {
-            //console.log('上传进度', res.progress)
-            //console.log('已经上传的数据长度', res.totalBytesSent)
-            //console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
-          });
+        // }, (error) => {
+        //   console.log('error: ' + error);
+        // }, {
+        //     region: 'ECN',
+        //     domain: 'http://p8c57y31f.bkt.clouddn.com', // // bucket 域名，下载资源时用到。如果设置，会在 success callback 的 res 参数加上可以直接使用的 ImageURL 字段。否则需要自己拼接
+        //     key: name, // [非必须]自定义文件 key。如果不设置，默认为使用微信小程序 API 的临时文件名
+        //     // 以下方法三选一即可，优先级为：uptoken > uptokenURL > uptokenFunc
+        //     //uptoken: '[yourTokenString]', // 由其他程序生成七牛 uptoken
+        //     uptokenURL: 'https://weixin.shopin.net/wechatshop/getQiniuToken.html', // 从指定 url 通过 HTTP GET 获取 uptoken，返回的格式必须是 json 且包含 uptoken 字段，例如： {"uptoken": "[yourTokenString]"}
+        //     //uptokenFunc: function () { return '[yourTokenString]'; }
+        //   }, (res) => {
+        //     //console.log('上传进度', res.progress)
+        //     //console.log('已经上传的数据长度', res.totalBytesSent)
+        //     //console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
+        //   });
 
 
         //qiniu upload end -------

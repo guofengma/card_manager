@@ -208,7 +208,7 @@ border: none;
 
 .post {
     float: right;
-    background-color: #1296db;
+    background-color: #2aa515;
     position: fixed;
     bottom: 30px;
     right: 20px;  

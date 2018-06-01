@@ -126,8 +126,33 @@ Page({
         })
 
         //tencent cloud upload  start
+        uploadFn(filePath,name);
         // 文件上传cos
-        uploadFn(filePath, name)
+        // wx.uploadFile({
+        //   url: "http://localhost:8083/wechatshop/wx_upload",
+        //   filePath: filePath,
+        //   name: 'file',
+        //   formData: {
+        //     'openId': openid
+        //   },
+        //   success: function (uploadRes) {
+        //     var data = uploadRes.data
+        //     var upload_res = JSON.parse(data)
+        //     var imageUrl = upload_res.imgUrl;
+        //     console.log(imageUrl);
+        //     _this.setData({
+        //       imageUrl: imageUrl,
+        //     });
+        //     var base64 = upload_res.base64;
+
+        //     console.log("获取base64:" + (new Date().getTime() - starttime))
+        //     starttime = new Date().getTime()
+        //     _this.getBankInfoByAi(base64);
+        //   },
+        //   fail: function (e) {
+        //     console.log('e', e)
+        //   }
+        // })
 
         //tentcent clound upload end
 

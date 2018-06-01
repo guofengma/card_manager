@@ -4,6 +4,7 @@
     "pages/logs/logs",
     "pages/cardType/cardType",
     "pages/addcard/bank/bank",
+    "pages/addcard/bankcopy/bank",
     "pages/cardDetail/cardDetail",
     "pages/addcard/visitingCard/visitingCard",
     "pages/addcard/vipCard/vipCard",

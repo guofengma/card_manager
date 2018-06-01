@@ -9,14 +9,36 @@
 var cosUrl = "https://" + "ap-chengdu" + ".file.myqcloud.com/files/v2/" + "1252859906" + "/" + "cardmanager-1252859906" +"/card"
 
 //填写自己的鉴权服务器地址
-// var cosSignatureUrl = 'https://weixin.shopin.net/wechatshop/getTencentSign.html' 
-var cosSignatureUrl = 'http://localhost:8083/wechatshop/getTencentSign.html' 
+var cosSignatureUrl = 'https://weixin.shopin.net/wechatshop/getTencentSign.html' 
+// var cosSignatureUrl = 'http://localhost:8083/wechatshop/getTencentSign.html' 
 /**
  * 上传方法
  * filePath: 上传的文件路径
  * fileName： 上传到cos后的文件名
  */
 function upload(filePath, fileName) {
+  // var openId = "123";
+  // wx.uploadFile({
+  //   url: "https://localhost:8083/wechatshop/wx_upload",
+  //   filePath: filePath,
+  //   name: 'file',
+  //   formData:{
+  //     'openId':openId
+  //   },
+    
+    
+  //   success: function (uploadRes) {
+  //     var data = uploadRes.data
+  //     console.log('uploadRes', uploadRes)
+  //     var upload_res = JSON.parse(data)
+  //     var imageUrl = upload_res.data.source_url;
+  //     console.log(imageUrl);
+  //     //do something
+  //   },
+  //   fail: function (e) {
+  //     console.log('e', e)
+  //   }
+  // })
 
     // 鉴权获取签名
     wx.request({

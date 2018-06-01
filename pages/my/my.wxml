@@ -48,6 +48,42 @@
       <view class="weui-cell_access__ft">赞赏</view>
     </view>
 
+    <navigator target="miniProgram" open-type="navigate" app-id="wx6bc5db901b3ccfde" path="{{item.url}}" extra-data="" version="release">
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__hd">
+          <image class="weui-cell__icon" src="/images/cardlogo/wenzi_logo.png" alt="" style="width:25px;margin-right:5px;display:block" />
+        </view>
+        <view class="weui-cell__bd">
+          <text></text>
+        </view>
+        <view class="weui-cell_access__ft">传图识字</view>
+      </view>
+    </navigator>
+
+    <navigator target="miniProgram" open-type="navigate" app-id="wxd1940318aaeb6958" path="{{item.url}}" extra-data="" version="release">
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__hd">
+          <image class="weui-cell__icon" src="/images/doutu_logo.png" alt="" style="width:25px;margin-right:5px;display:block" />
+        </view>
+        <view class="weui-cell__bd">
+          <text></text>
+        </view>
+        <view class="weui-cell_access__ft">斗图表情</view>
+      </view>
+    </navigator>
+
+    <navigator target="miniProgram" open-type="navigate" app-id="wxc35fd1193f81e100" path="{{item.url}}" extra-data="" version="release">
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__hd">
+          <image class="weui-cell__icon" src="/images/bizhi_logo.png" alt="" style="width:25px;margin-right:5px;display:block" />
+        </view>
+        <view class="weui-cell__bd">
+          <text></text>
+        </view>
+        <view class="weui-cell_access__ft">美图壁纸</view>
+      </view>
+    </navigator>
+
   </view>
 
 
